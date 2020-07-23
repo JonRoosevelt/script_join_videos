@@ -10,13 +10,16 @@ class JoinVideos:
         self.output_name = output_name
 
     def get_videos(self):
-        folder = os.path.basename(os.path.normpath(self.path))
-        videos = []
-        for r, d, f in os.walk(self.path):
-            for video in f:
-                if self.extension in video:
-                    videos.append(os.path.join(self.path, video))
-        return videos[::-1]
+        try:
+            folder = os.path.basename(os.path.normpath(self.path))
+            videos = []
+            for r, d, f in os.walk(self.path):
+                for video in f:
+                    if self.extension in video:
+                        videos.append(os.path.join(self.path, video))
+            return videos[::-1]
+        except OSError as err:
+            raise err
 
     def join_videos(self, videos):
         command_prefix = f'mkvmerge -o {self.path}/{self.output_name} -w '
