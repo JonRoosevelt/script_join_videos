@@ -1,12 +1,13 @@
 import sys, os
 import uuid
 import subprocess
+from exceptions import *
 
 
 class JoinVideos:
-    def __init__(self, path, extension='webm', output_name=f'{uuid.uuid4()}.webm'):
+    def __init__(self, path, extension="webm", output_name=f"{uuid.uuid4()}.webm"):
         self.path = path
-        self.extension = f'.{extension}'
+        self.extension = f".{extension}"
         self.output_name = output_name
 
     def get_videos(self):
@@ -22,9 +23,9 @@ class JoinVideos:
             raise err
 
     def join_videos(self, videos):
-        command_prefix = f'mkvmerge -o {self.path}/{self.output_name} -w '
-        concat_video_string = ' + '.join(videos)
-        return f'{command_prefix}{concat_video_string}'
+        command_prefix = f"mkvmerge -o {self.path}/{self.output_name} -w "
+        concat_video_string = " + ".join(videos)
+        return f"{command_prefix}{concat_video_string}"
 
     def write_videofile(self, joined_videos):
         joined_videos.write_videofile("")
@@ -35,5 +36,6 @@ class JoinVideos:
         print(joined_videos)
         return subprocess.run(joined_videos, shell=True, check=True)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     join_videos = JoinVideos(path=sys.argv[1]).run()
