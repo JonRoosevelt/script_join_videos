@@ -3,6 +3,7 @@ import os
 import uuid
 import subprocess
 from pathlib import Path
+import ffmpeg
 
 
 class JoinVideos:
@@ -18,15 +19,14 @@ class JoinVideos:
     def get_videos(self):
         videos = []
         try:
-            with open('input.txt', 'a') as file:
-                for r, d, f in os.walk(self.path):
-                    for video in f:
-                        if self.extension in video:
-                            file_path = self.safe_spaces(
-                                os.path.join(self.path, video))
-                            videos.append(file_path)
-                            file.write(f'file {file_path}\n')
-                file.close()
+            for r, d, f in os.walk(self.path):
+                for video in f:
+                    if self.extension in video:
+                        file_path = self.safe_spaces(
+                            os.path.join(self.path, video))
+                        import pdb
+                        pdb.set_trace()
+                        videos.append(open(Path(file_path)))
         except FileNotFoundError as ex:
             print(ex)
             print(file_path)
@@ -34,11 +34,34 @@ class JoinVideos:
         return videos
 
     def join_videos(self, videos):
-        output = self.safe_spaces(self.output_name)
-        return f'ffmpeg -f concat -safe 0 -i input.txt -c copy {output}'
+        import pdb
+        pdb.set_trace()
+        return ffmpeg.concat(videos).node
+    # def get_videos(self):
+    #     videos = []
+    #     try:
+    #         with open('input.txt', 'a') as file:
+    #             for r, d, f in os.walk(self.path):
+    #                 for video in f:
+    #                     if self.extension in video:
+    #                         file_path = self.safe_spaces(
+    #                             os.path.join(self.path, video))
+    #                         videos.append(file_path)
+    #                         file.write(f'file {file_path}\n')
+    #             file.close()
+    #     except FileNotFoundError as ex:
+    #         print(ex)
+    #         print(file_path)
+    #     videos.sort()
+    #     return videos
+
+    # def join_videos(self, videos):
+    #     output = self.safe_spaces(self.output_name)
+    #     return f'ffmpeg -f concat -safe 0 -i input.txt -c copy {output}'
 
     def write_videofile(self, joined_videos):
-        joined_videos.write_videofile("")
+        output = self.safe_spaces(self.output_name)
+        ffmpeg.output(join_videos, output)
 
     def clean_input(self):
         os.remove('input.txt')
@@ -46,8 +69,7 @@ class JoinVideos:
     def run(self):
         videos = self.get_videos()
         joined_videos = self.join_videos(videos)
-        subprocess.run(joined_videos, shell=True, check=True)
-        self.clean_input()
+        self.write_videofile(joined_videos).run()
 
 
 if __name__ == '__main__':
