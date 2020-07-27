@@ -2,28 +2,12 @@
 
 About
 ---
-This a simple Python script to merge `webm` video files.
+This a simple Python script to merge video files.
 
 Instalation
 ---
 
-As any Python code, you should do this inside a virtual environment.
-After that install mkvtoolnix
-
-**Linux**
-```  
-$ (sudo) apt install mkvtoolnix
-```
-
-**Mac**
-```
-$ brew install mkvtoolnix
-```
-
-Cd into the application folder and install the requirements from requirements.txt
-```
-$ pip install -r requirements.txt
-```
+As any Python code, you should do this inside a virtual environment, but it only requires python3
 
 Usage
 ---
