@@ -1,39 +1,46 @@
-import sys, os
+import sys
+import os
 import uuid
 import subprocess
-from exceptions import *
+from pathlib import Path
 
 
 class JoinVideos:
-    def __init__(self, path, extension='webm', output_name=f'{uuid.uuid4()}.webm'):
+    def __init__(self, path, extension='webm', output_name=uuid.uuid4()):
         self.path = path
-        self.extension = f'.{extension}'
-        self.output_name = output_name
+        self.extension = extension
+        self.output_name = Path(f'{self.path}/{output_name}.{self.extension}')
 
-    def get_videos(self):
+    def safe_spaces(self, _string):
+        _string = str(_string)
+        return _string.replace(' ', '\\ ')
+
+    def get_videos_list(self):
+        videos = []
         try:
-            folder = os.path.basename(os.path.normpath(self.path))
-            videos = []
-            for r, d, f in os.walk(self.path):
-                for video in f:
-                    if self.extension in video:
-                        videos.append(os.path.join(self.path, video))
-            return videos[::-1]
-        except OSError as err:
-            if error.errno == errno.ENOENT:  # File not found
-                raise OSFileNotFoundException
-            raise err
+            with open(Path(f'{self.path}/input.txt').as_posix(), 'a') as file:
+                for r, d, f in os.walk(self.path):
+                    for video in f:
+                        if f'.{self.extension}' in video:
+                            file_path = self.safe_spaces(
+                                os.path.join(self.path, video))
+                            videos.append(file_path)
+                            file.write(f'file {file_path}\n')
+                file.close()
+        except FileNotFoundError as ex:
+            print(ex)
+            print(file_path)
 
-    def join_videos(self, videos):
-        command_prefix = f'mkvmerge -o {self.path}/{self.output_name} -w '
-        concat_video_string = ' + '.join(videos)
-        return f'{command_prefix}{concat_video_string}'
+    def get_command(self):
+        file_path = Path(self.path).as_posix()
+        return f'ffmpeg -f concat -safe 0 -i {file_path}/input.txt -c copy {self.output_name} 2> {file_path}/log.txt'
 
     def run(self):
-        videos = self.get_videos()
-        joined_videos = self.join_videos(videos)
-        print(joined_videos)
-        return subprocess.run(joined_videos, shell=True, check=True)
+        self.get_videos_list()
+        command = self.get_command()
+        subprocess.run(command, shell=True, check=True)
+        os.remove(Path(f'{self.path}/input.txt').as_posix())
+
 
 if __name__ == '__main__':
     join_videos = JoinVideos(path=sys.argv[1]).run()
