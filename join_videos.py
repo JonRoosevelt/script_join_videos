@@ -20,6 +20,7 @@ class JoinVideos:
         try:
             with open(Path(f'{self.path}/input.txt').as_posix(), 'a') as file:
                 for r, d, f in os.walk(self.path):
+                    f.sort()
                     for video in f:
                         if f'.{self.extension}' in video:
                             file_path = self.safe_spaces(
@@ -32,8 +33,9 @@ class JoinVideos:
             print(file_path)
 
     def get_command(self):
-        file_path = Path(self.path).as_posix()
-        return f'ffmpeg -f concat -safe 0 -i {file_path}/input.txt -c copy {self.output_name} 2> {file_path}/log.txt'
+        file_path = self.safe_spaces(self.path)
+        output_name = self.safe_spaces(self.output_name)
+        return f'ffmpeg -f concat -safe 0 -i {file_path}input.txt -c copy {output_name} 2> {file_path}log.txt'
 
     def run(self):
         self.get_videos_list()

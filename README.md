@@ -7,7 +7,18 @@ This a simple Python script to merge video files.
 Instalation
 ---
 
-As any Python code, you should do this inside a virtual environment, but it only requires python3
+As any Python code, you should do this inside a virtual environment. 
+Though it doesn't require any external python lib, you need ffmpeg installed in your machine.
+
+**Linux**
+```  
+$ (sudo) apt install ffmpeg
+```
+
+**Mac**
+```
+$ brew install ffmpeg
+```
 
 Usage
 ---
