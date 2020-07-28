@@ -35,7 +35,7 @@ class JoinVideos:
     def get_command(self):
         file_path = self.safe_spaces(self.path)
         output_name = self.safe_spaces(self.output_name)
-        return f'ffmpeg -f concat -safe 0 -i {file_path}input.txt -c copy {output_name} 2> {file_path}log.txt'
+        return f'ffmpeg -f concat -safe 0 -i {file_path}/input.txt -c copy {output_name} 2> {file_path}/log.txt'
 
     def run(self):
         self.get_videos_list()
