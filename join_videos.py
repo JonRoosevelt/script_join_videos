@@ -21,7 +21,7 @@ class JoinVideos:
                             os.path.join(self.path, video))
                         output = file_path.replace('webm', 'mp4')
                         subprocess.run(
-                            f'ffmpeg -i {file_path} -qscale 0 {output}', shell=True, check=True)
+                            f'ffmpeg -i {file_path} -vcodec copy {output}', shell=True, check=True)
         except FileNotFoundError as ex:
             print(ex)
             print(file_path)
