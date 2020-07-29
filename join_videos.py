@@ -11,6 +11,21 @@ class JoinVideos:
         self.extension = extension
         self.output_name = Path(f'{self.path}/{output_name}.{self.extension}')
 
+    def convert_videos(self):
+        try:
+            for r, d, f in os.walk(self.path):
+                f.sort()
+                for video in f:
+                    if f'.{self.extension}' in video:
+                        file_path = self.safe_spaces(
+                            os.path.join(self.path, video))
+                        output = file_path.replace('webm', 'mp4')
+                        subprocess.run(
+                            f'ffmpeg -i {file_path} -vcodec copy {output}', shell=True, check=True)
+        except FileNotFoundError as ex:
+            print(ex)
+            print(file_path)
+
     def safe_spaces(self, _string):
         _string = str(_string)
         return _string.replace(' ', '\\ ')
@@ -22,7 +37,7 @@ class JoinVideos:
                 for r, d, f in os.walk(self.path):
                     f.sort()
                     for video in f:
-                        if f'.{self.extension}' in video:
+                        if '.mp4' in video:
                             file_path = self.safe_spaces(
                                 os.path.join(self.path, video))
                             videos.append(file_path)
@@ -34,10 +49,12 @@ class JoinVideos:
 
     def get_command(self):
         file_path = self.safe_spaces(self.path)
-        output_name = self.safe_spaces(self.output_name)
+        output_name = self.safe_spaces(
+            self.output_name).replace('webm', 'mp4')
         return f'ffmpeg -f concat -safe 0 -i {file_path}/input.txt -c copy {output_name} 2> {file_path}/log.txt'
 
     def run(self):
+        self.convert_videos()
         self.get_videos_list()
         command = self.get_command()
         subprocess.run(command, shell=True, check=True)
